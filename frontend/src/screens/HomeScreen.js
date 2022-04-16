@@ -1,3 +1,4 @@
+import React from "react";
 import { Link } from "react-router-dom";
 // import data from "../data.js";
 import { useEffect, useState, useReducer } from "react";
@@ -38,7 +39,7 @@ function HomeScreen() {
       }
       //   setProducts(result.data);
     };
-    fetchData(); //ask doubt
+    fetchData(); //calling function to execute it
   }, []);
 
   return (
