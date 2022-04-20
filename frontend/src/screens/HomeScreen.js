@@ -1,9 +1,12 @@
 import React from "react";
-import { Link } from "react-router-dom";
 // import data from "../data.js";
-import { useEffect, useState, useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import axios from "axios";
 import logger from "use-reducer-logger";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Product from "../components/Product";
+import { Helmet } from "react-helmet-async";
 
 const reducer = (state, action) => {
   //recuder accepts two parameter, state - current state is accepted which is initialized as [] in the homescreen function with error and loading, action
@@ -44,6 +47,10 @@ function HomeScreen() {
 
   return (
     <div>
+      <Helmet>
+        {/* //Helmet is page title (i.e., tab name) */}
+        <title>Amazona</title>
+      </Helmet>
       <h1>Featured Products</h1>
       <div className="products">
         {loading ? (
@@ -51,22 +58,13 @@ function HomeScreen() {
         ) : error ? (
           <div> {error} </div>
         ) : (
-          products.map((product) => (
-            <div className="product" key={product.slug}>
-              <Link to={`/product/${product.slug}`}>
-                <img src={product.image} alt={product.name} />
-              </Link>
-              <div className="product-info">
-                <Link to={`/product/${product.slug}`}>
-                  <p> {product.name}</p>{" "}
-                </Link>
-                <p>
-                  <strong>${product.price}</strong>
-                </p>
-                <button>Add to cart</button>
-              </div>
-            </div>
-          ))
+          <Row>
+            {products.map((product) => (
+              <Col key={product.slug} sm={6} md={4} lg={3} className="mb-3">
+                <Product product={product}></Product>
+              </Col>
+            ))}
+          </Row>
         )}
       </div>
     </div>

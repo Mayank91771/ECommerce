@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import { HelmetProvider } from "react-helmet-async";
 
 // ReactDOM.render(
 //   <React.StrictMode>
@@ -20,4 +21,10 @@ reportWebVitals();
 const container = document.getElementById("root");
 const root = ReactDOM.createRoot(container);
 
-root.render(<App />);
+root.render(
+  <>
+    <HelmetProvider>
+      <App />
+    </HelmetProvider>
+  </>
+);
