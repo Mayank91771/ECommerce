@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useContext } from "react";
 import axios from "axios";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -13,6 +13,7 @@ import { Helmet } from "react-helmet-async";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
 import { getError } from "../util";
+import { Store } from "../store";
 
 const reducer = (state, action) => {
   //recuder accepts two parameter, state - current state is accepted which is initialized as [] in the homescreen function with error and loading, action
@@ -45,14 +46,25 @@ function ProductScreen() {
         const result = await axios.get(
           `http://localhost:5000/api/products/slug/${slug}`
         );
+        console.log(`RESULT : ${JSON.stringify(result.data)}`);
         dispatch({ type: "FETCH_SUCCESS", payload: result.data });
       } catch (err) {
         // dispatch({ type: "FETCH_FAIL", payload: err.message });
-        dispatch({ type: "FETCH_FAIL", payload: getError(err) });
+        dispatch({ type: "FETCH_FAIL", payload: getError(err) }); //err message in payload is received from server.js
       }
     };
     fetchData();
   }, [slug]);
+
+  const { state, dispatch: ctxtDispatch } = useContext(Store); //renaming dispatch with ctxtdispatch (i.e., contextDispatch) to distinguish it from dispatch of current component (i.e., in useEffect)
+  //to add an item to the cart we need to create and action to dispatch
+  const addToCartHandler = () => {
+    console.log(product);
+    ctxtDispatch({
+      type: "CART_ADD_ITEM",
+      payload: { ...product, quantity: 1 }, //concatenating ...product with quantity value
+    });
+  };
 
   return loading ? (
     <LoadingBox />
@@ -62,11 +74,14 @@ function ProductScreen() {
     <div>
       <Row>
         <Col md={6}>
-          <img
-            className="img-large"
-            src={product.image}
-            alt={product.name}
-          ></img>
+          {product.image && (
+            <img
+              className="img-large"
+              src={`/${product.image}`}
+              alt={product.name}
+            />
+          )}
+          {console.log(`PRODUCT : ${JSON.stringify(product)}`)}
         </Col>
         <Col md={3}>
           <ListGroup variant="flush">
@@ -108,7 +123,9 @@ function ProductScreen() {
                 {product.countInStock > 0 && (
                   <ListGroup.Item>
                     <div className="d-grid">
-                      <Button variant="primary">Add to cart</Button>
+                      <Button onClick={addToCartHandler} variant="primary">
+                        Add to cart
+                      </Button>
                     </div>
                   </ListGroup.Item>
                 )}
