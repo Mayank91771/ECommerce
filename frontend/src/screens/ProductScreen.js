@@ -34,7 +34,7 @@ function ProductScreen() {
   const { slug } = params; //getting data.slug from param
 
   const [{ loading, error, product }, dispatch] = useReducer(reducer, {
-    product: [], //product as we gonnashow only one product not all of them
+    product: [], //product as we gonna show only one product not all of them
     loading: true,
     error: "",
   });
@@ -46,7 +46,7 @@ function ProductScreen() {
         const result = await axios.get(
           `http://localhost:5000/api/products/slug/${slug}`
         );
-        console.log(`RESULT : ${JSON.stringify(result.data)}`);
+        // console.log(`RESULT : ${JSON.stringify(result.data)}`);
         dispatch({ type: "FETCH_SUCCESS", payload: result.data });
       } catch (err) {
         // dispatch({ type: "FETCH_FAIL", payload: err.message });
@@ -56,13 +56,19 @@ function ProductScreen() {
     fetchData();
   }, [slug]);
 
-  const { state, dispatch: ctxtDispatch } = useContext(Store); //renaming dispatch with ctxtdispatch (i.e., contextDispatch) to distinguish it from dispatch of current component (i.e., in useEffect)
-  //to add an item to the cart we need to create and action to dispatch
-  const addToCartHandler = () => {
-    console.log(product);
-    ctxtDispatch({
+  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { cart } = state;
+  const addToCartHandler = async () => {
+    const existItem = cart.cartItems.find((x) => x._id === product._id);
+    const quantity = existItem ? existItem.quantity + 1 : 1;
+    const { data } = await axios.get(`/api/products/${product._id}`);
+    if (data.countInStock < quantity) {
+      window.alert("Sorry. Product is out of stock");
+      return;
+    }
+    ctxDispatch({
       type: "CART_ADD_ITEM",
-      payload: { ...product, quantity: 1 }, //concatenating ...product with quantity value
+      payload: { ...product, quantity },
     });
   };
 
@@ -81,7 +87,7 @@ function ProductScreen() {
               alt={product.name}
             />
           )}
-          {console.log(`PRODUCT : ${JSON.stringify(product)}`)}
+          {/* {console.log(`PRODUCT : ${JSON.stringify(product)}`)} */}
         </Col>
         <Col md={3}>
           <ListGroup variant="flush">

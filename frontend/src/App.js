@@ -27,7 +27,11 @@ function App() {
                   {cart.cartItems.length > 0 && (
                     // if cart.cartItems from react context exists then do the following
                     <Badge pill bg="danger">
-                      {cart.cartItems.length}
+                      {cart.cartItems.reduce(
+                        (accumulator, currentValue) =>
+                          accumulator + currentValue.quantity,
+                        0
+                      )}
                     </Badge>
                   )}
                 </Link>
