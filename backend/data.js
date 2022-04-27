@@ -32,7 +32,7 @@ const data = {
       slug: "nike-shirt",
       category: "Shirts",
       image: "images/shirt2.jpg",
-      countInStock: 10,
+      countInStock: 0,
       price: 45,
       brand: "Nike",
       rating: 0.5,
