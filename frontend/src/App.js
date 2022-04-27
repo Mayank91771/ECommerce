@@ -9,6 +9,7 @@ import Container from "react-bootstrap/Container";
 import { LinkContainer } from "react-router-bootstrap/";
 import { Store } from "./store";
 import CartScreen from "./screens/CartScreen";
+import SignInScreen from "./screens/SignInScreen";
 
 function App() {
   const { state } = useContext(Store);
@@ -46,6 +47,7 @@ function App() {
               <Route path="/product/:slug" element={<ProductScreen />} />{" "}
               {/* slug is an element of data.js */}
               <Route path="/cart" element={<CartScreen />} />{" "}
+              <Route path="/signin" element={<SignInScreen />} />{" "}
               <Route path="/" element={<HomeScreen />} />
             </Routes>
           </Container>
